@@ -1,4 +1,5 @@
 using System;
+using Infrastructure.Services.Input;
 using Infrastructure.States;
 using Logic;
 using UnityEngine;
@@ -28,13 +29,19 @@ namespace Infrastructure
 
         private void BindServices()
         {
-            
+            Container.Bind<IInputService>().FromMethod(GetInputService).AsSingle();
         }
 
         private new void Start()
         {
             _stateMachine = new GameStateMachine(new SceneLoader(this), Container.Resolve<LoadingCurtain>());
             _stateMachine.Enter<LoadSceneState,string>(FirstLevelName);
+        }
+
+        private IInputService GetInputService()
+        {
+            //conditions for another platforms if needed
+            return new StandaloneInputService();
         }
     }
 }
