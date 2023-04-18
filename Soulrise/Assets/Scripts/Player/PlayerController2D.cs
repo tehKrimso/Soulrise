@@ -12,25 +12,28 @@ namespace Player
         private Rigidbody2D _rigidbody;
 
         private bool _isFacingRight;
+        
+        private const float GroundCheckRadius = 0.2f;
 
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
         }
 
-        public void Move(Vector2 movementVector)
+        public void Move(float movement)
         {
-            _rigidbody.velocity = movementVector;
+            _rigidbody.velocity = new Vector2(movement, _rigidbody.velocity.y);
             
-            if(movementVector.x > 0 && !_isFacingRight)
+            if(movement > 0 && !_isFacingRight)
                 Flip();
-            else if(movementVector.x < 0 && _isFacingRight)
+            else if(movement < 0 && _isFacingRight)
                 Flip();
         }
 
-        public void Jump()
+        public void Jump(float jumpForce)
         {
-            
+            if(IsGrounded())
+                _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, jumpForce);
         }
         
         private void Flip()
@@ -40,5 +43,7 @@ namespace Player
             localScale.x *= -1f;
             transform.localScale = localScale;
         }
+
+        private bool IsGrounded() => Physics2D.OverlapCircle(GroundCheck.position, GroundCheckRadius, GroundLayers);
     }
 }

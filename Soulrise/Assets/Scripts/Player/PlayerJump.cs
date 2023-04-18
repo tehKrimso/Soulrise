@@ -1,15 +1,14 @@
 using System;
 using Infrastructure.Services.Input;
-using Static;
 using UnityEngine;
 using Zenject;
 
 namespace Player
 {
-    public class PlayerMove : MonoBehaviour
+    public class PlayerJump : MonoBehaviour
     {
-        public float MovementSpeed;
-
+        public float JumpForce;
+        
         private PlayerController2D _playerController;
         private IInputService _input;
 
@@ -24,16 +23,8 @@ namespace Player
 
         private void Update()
         {
-            Vector2 movementVector = Vector2.zero;
-
-            if (_input.Axis.sqrMagnitude > Constants.Epsilon)
-            {
-                movementVector = _input.Axis;
-                movementVector.Normalize();
-            }
-
-            //movementVector += Physics2D.gravity;
-            _playerController.Move(MovementSpeed * movementVector.x);
+            if(_input.IsJumpButtonUp())
+                _playerController.Jump(JumpForce);
         }
     }
 }
